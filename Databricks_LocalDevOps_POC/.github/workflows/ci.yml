@@ -1,0 +1,41 @@
+name: Python CI
+
+on:
+  pull_request:
+    paths:
+      - "Databricks_LocalDevOps_POC/**"
+  push:
+    branches: [main, master]
+    paths:
+      - "Databricks_LocalDevOps_POC/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Databricks_LocalDevOps_POC
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: Install locked dependencies
+        run: uv sync --locked --all-groups
+      - name: Verify formatting
+        run: uv run poe format-check
+      - name: Lint
+        run: uv run poe lint
+      - name: Type check
+        run: uv run poe typecheck
+      - name: Unit tests and coverage
+        run: uv run poe coverage
+      - name: Security scan
+        run: uv run poe security
+      - name: Secret scan
+        run: uv run poe secret-scan
+      - name: Bundle structure validation
+        run: uv run poe bundle-validate
+      - name: Build package
+        run: uv build

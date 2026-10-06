@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f8f6">
+    <title>Catalog Desk</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Catalog Desk home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>Catalog Desk</span>
+      </a>
+      <div class="topbar-meta"><span class="live-dot"></span><span>Unity Catalog</span></div>
+    </header>
+    <main class="workspace">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">GOVERNED DATA ASSISTANT</p>
+        <h1 id="page-title">Ask your catalog.</h1>
+        <p class="intro-copy">Explore approved business data with answers tied back to their source.</p>
+      </section>
+      <section class="conversation" aria-label="Conversation">
+        <div id="messages" class="messages" aria-live="polite" aria-relevant="additions"></div>
+        <div id="status" class="status" role="status"></div>
+      </section>
+      <form id="question-form" class="composer">
+        <label class="sr-only" for="question">Ask a question about the catalog</label>
+        <textarea id="question" name="question" rows="2" maxlength="2000" placeholder="Ask a question about your data..." required></textarea>
+        <div class="composer-footer">
+          <span class="privacy-note"><span aria-hidden="true">&#8627;</span> Responses are grounded in authorized catalog data</span>
+          <button id="send" class="send-button" type="submit" aria-label="Send question" title="Send question">
+            <span>Ask</span><span aria-hidden="true">&#8594;</span>
+          </button>
+        </div>
+      </form>
+      <div class="bottom-row">
+        <div class="suggestions" aria-label="Suggested questions">
+          <button type="button" class="suggestion">Monthly sales trend</button>
+          <button type="button" class="suggestion">Top products by revenue</button>
+          <button type="button" class="suggestion">Average order value</button>
+        </div>
+        <button id="reset" class="reset-button" type="button" title="Start a new conversation">New conversation</button>
+      </div>
+    </main>
+    <script src="/static/chat.js" defer></script>
+  </body>
+</html>

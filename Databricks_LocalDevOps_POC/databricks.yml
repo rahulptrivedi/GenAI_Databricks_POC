@@ -1,0 +1,68 @@
+bundle:
+  name: unity-catalog-chatbot
+
+variables:
+  app_name:
+    description: Databricks App resource name for this target.
+    default: uc-chatbot-${bundle.target}
+  catalog_name:
+    description: Synthetic demo catalog name; keep environment-specific catalogs isolated.
+    default: chatbot_demo
+  genie_agent_id:
+    description: Genie space ID configured for this target workspace.
+  warehouse_id:
+    description: SQL Warehouse ID configured for this target workspace.
+
+include:
+  - resources/*.yml
+
+sync:
+  include:
+    - app/**
+    - resources/**
+    - pyproject.toml
+    - uv.lock
+    - app.yaml
+
+resources:
+  apps:
+    chatbot:
+      name: ${var.app_name}
+      description: Read-only Unity Catalog chatbot backed by a configured Genie space.
+      source_code_path: .
+      config:
+        command:
+          - uvicorn
+          - app.api.application:app
+          - --host
+          - 0.0.0.0
+          - --port
+          - "8000"
+        env:
+          - name: ENVIRONMENT
+            value: ${bundle.target}
+          - name: DATABRICKS_CATALOG
+            value: ${var.catalog_name}
+          - name: DATABRICKS_GENIE_AGENT_ID
+            value: ${var.genie_agent_id}
+          - name: DATABRICKS_WAREHOUSE_ID
+            value: ${var.warehouse_id}
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: ${env.DATABRICKS_HOST}
+  test:
+    mode: production
+    workspace:
+      host: ${env.DATABRICKS_HOST}
+    variables:
+      catalog_name: chatbot_demo_test
+  prod:
+    mode: production
+    workspace:
+      host: ${env.DATABRICKS_HOST}
+    variables:
+      catalog_name: chatbot_demo_prod

@@ -1,0 +1,29 @@
+name: Deploy Databricks App (test)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: test
+    defaults:
+      run:
+        working-directory: Databricks_LocalDevOps_POC
+    env:
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_CLIENT_ID: ${{ vars.DATABRICKS_CLIENT_ID }}
+      DATABRICKS_AUTH_TYPE: github-oidc
+      DATABRICKS_BUNDLE_VAR_GENIE_AGENT_ID: ${{ vars.DATABRICKS_GENIE_AGENT_ID }}
+      DATABRICKS_BUNDLE_VAR_WAREHOUSE_ID: ${{ vars.DATABRICKS_WAREHOUSE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - run: uv sync --locked --all-groups
+      - run: uv run databricks bundle validate -t test
+      - run: uv run databricks bundle deploy -t test
